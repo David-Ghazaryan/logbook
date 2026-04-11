@@ -20,42 +20,42 @@ const AttendanceModule = () => {
     return dates;
   }, []);
 
-useEffect(() => {
-  const fetchStudents = async () => {
-    try {
-      const res = await fetch(`${BASE_URL}/students`);
-      if (!res.ok) throw new Error("Students API error");
-      
-      const data = await res.json();
-      setStudents(data);
-      console.log(data)
-    } catch (err) {
-      console.error("Students fetch error:", err);
-    } finally {
-      setLoading(false); 
-    }
-  };
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/students`);
+        if (!res.ok) throw new Error('Students API error');
 
-  fetchStudents();
-}, []);
+        const data = await res.json();
+        setStudents(data);
+        console.log(data);
+      } catch (err) {
+        console.error('Students fetch error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-useEffect(() => {
-  const fetchAttendance = async () => {
-    try {
-      const res = await fetch(`${BASE_URL}/attendance`);
-      if (!res.ok) throw new Error("Attendance API error");
-      
-      const data = await res.json();
-      setAttendanceRecords(data);
-    } catch (err) {
-      console.error("Attendance fetch error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchStudents();
+  }, [students]);
 
-  fetchAttendance();
-}, []);
+  useEffect(() => {
+    const fetchAttendance = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/attendance`);
+        if (!res.ok) throw new Error('Attendance API error');
+
+        const data = await res.json();
+        setAttendanceRecords(data);
+      } catch (err) {
+        console.error('Attendance fetch error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAttendance();
+  }, []);
 
   const handleToggle = async (studentId, date, existingRecord) => {
     const newStatus = existingRecord ? !existingRecord.status : true;
@@ -83,17 +83,24 @@ useEffect(() => {
         setAttendanceRecords((prev) => prev.map((r) => (r.id === 'temp' ? data : r)));
       }
     } catch (err) {
-      alert('Error:');
+      alert(':');
       console.log(err);
     }
   };
 
-  if (loading) return <div className="flex items-center justify-center h-screen"><CircularProgress size={75} color="success" /></div>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <CircularProgress size={75} color="success" />
+      </div>
+    );
 
   return (
-    <div className="max-w-6xl mx-auto bg-white shadow-xl rounded-xl overflow-hidden border border-slate-100">
-      <div className="bg-[#448e78] p-6 text-center text-white text-2xl font-bold">Logbook</div>
-      
+    <div className=" -translate-x-7 max-w-5xl ">
+      <div className="bg-[#448e78] p-6 text-center rounded-t-2xl  text-white text-2xl font-bold">
+        Logbook
+      </div>
+
       <AttendanceTable
         students={students}
         weekDates={weekDates}

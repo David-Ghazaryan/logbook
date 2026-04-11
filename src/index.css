@@ -39,8 +39,8 @@ body {
 #root {
   display: flex;
   flex-direction: column;
-  width: 1126px;
-  height: 100vh;
+  width: 1300px;
+  height: full;
   max-width: 100%;
   text-align: center;
   justify-content: center;

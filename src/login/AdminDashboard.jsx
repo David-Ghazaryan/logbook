@@ -22,11 +22,23 @@ const AdminDashboard = ({ onNavigate }) => {
             <h3 className="text-xl font-bold text-[#448e78] transition">
               Logbook
             </h3>
-            <p className="text-slate-500 mt-2 text-sm">
+            <h6 className="text-slate-500 mt-2 text-sm">
               Do present-absent։
-            </p>
+            </h6>
           </button>
 
+          <button
+            onClick={() => onNavigate('info')}
+            className="bg-white  p-8 rounded-3xl cursor-pointer shadow-lg border border-[#448e78] hover:shadow-2xl transition-all text-left ">
+            
+            <div className='flex flex-col '>
+                <h3 className="text-xl font-bold text-[#448e78]">All Students</h3>
+                <h6 className="text-slate-500 mt-2 text-sm">
+                  Students info:
+                </h6>
+            </div>
+            
+          </button>
           {/* <div className="bg-white p-8 rounded-3xl shadow-lg border border-slate-100 opacity-60">
             <div className="text-4xl mb-4">👥</div>
             <h3 className="text-xl font-bold text-slate-800">Աշակերտների Ցուցակ</h3>
