@@ -1,11 +1,14 @@
-const AttendanceCheckbox = ({ isPresent, onToggle }) => (
-  <td className="p-5 text-center border-b border-r ">
-    <input
-      type="checkbox"
-      checked={isPresent}
-      onChange={onToggle}
-      className="w-10 h-10 rounded-md border-4 border-red accent-[#448e78] cursor-pointer"
-    />
+const STATUS_DATA = {
+  present: { icon: '✅', color: '#4caf50' },
+  absent: { icon: '❌', color: '#f44336' },
+  late: { icon: '⏰', color: '#ff9800' },
+  excused: { icon: '🏥', color: '#2196f3' },
+};
+console.log('status', STATUS_DATA.present);
+
+const AttendanceCheckbox = ({ status }) => (
+  <td className={`p-5 text-center border-b border-r `}>
+    {status ? STATUS_DATA[status]?.icon : '❌'}
   </td>
 );
 

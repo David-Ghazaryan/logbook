@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import AttendanceTable from './AttendanceTable';
 import CircularProgress from '@mui/material/CircularProgress';
+
 const BASE_URL = 'http://localhost:5005';
 
+const STATUS_DATA = {
+  present: { label: 'Ներկա', icon: '✅', color: '#4caf50' },
+  absent: { label: 'Բացակա', icon: '❌', color: '#f44336' },
+  late: { label: 'Ուշացած', icon: '⏰', color: '#ff9800' },
+  excused: { label: 'Հարգելի', icon: '🏥', color: '#2196f3' },
+};
 const AttendanceModule = () => {
   const [students, setStudents] = useState([]);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
@@ -21,72 +28,80 @@ const AttendanceModule = () => {
   }, []);
 
   useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const res = await fetch(`${BASE_URL}/students`);
-        if (!res.ok) throw new Error('Students API error');
-
-        const data = await res.json();
-        setStudents(data);
-        console.log(data);
-      } catch (err) {
-        console.error('Students fetch error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStudents();
-  }, [students]);
-
+    fetch(`${BASE_URL}/students`)
+      .then((res) => res.json())
+      .then((data) => setStudents(data))
+      .catch((err) => console.error(err));
+  }, []);
   useEffect(() => {
-    const fetchAttendance = async () => {
-      try {
-        const res = await fetch(`${BASE_URL}/attendance`);
-        if (!res.ok) throw new Error('Attendance API error');
-
-        const data = await res.json();
+    fetch(`${BASE_URL}/attendance`)
+      .then((res) => res.json())
+      .then((data) => {
         setAttendanceRecords(data);
-      } catch (err) {
-        console.error('Attendance fetch error:', err);
-      } finally {
+        console.log('attendance', data);
         setLoading(false);
-      }
-    };
-
-    fetchAttendance();
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
   }, []);
 
-  const handleToggle = async (studentId, date, existingRecord) => {
-    const newStatus = existingRecord ? !existingRecord.status : true;
+  // const handleToggle = async (studentId, date, existingRecord) => {
+  //   const currentStatus = existingRecord?.status || 'absent';
+  //   const newStatus = NEXT_STATUS[currentStatus] || 'present';
 
-    setAttendanceRecords((prev) => {
-      if (existingRecord)
-        return prev.map((r) => (r.id === existingRecord.id ? { ...r, status: newStatus } : r));
-      return [...prev, { studentId, date, status: newStatus, id: 'temp' }];
-    });
+  //   // 1. ԼՈԿԱԼ ԹԱՐՄԱՑՈՒՄ (Optimistic UI)
+  //   // Օգտագործում ենք ֆունկցիոնալ թարմացում, որպեսզի սխալ չլինի
+  //   setAttendanceRecords((prev) => {
+  //     const formattedDate = new Date(date).toISOString().split('T')[0];
 
-    try {
-      const method = existingRecord ? 'PUT' : 'POST';
-      const url = existingRecord
-        ? `${BASE_URL}/attendance/${existingRecord.id}`
-        : `${BASE_URL}/attendance`;
+  //     const isExisting = prev.some(
+  //       (r) =>
+  //         r.student_id === studentId &&
+  //         new Date(r.date).toISOString().split('T')[0] === formattedDate,
+  //     );
 
-      const res = await fetch(url, {
-        method,
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ studentId, date, status: newStatus }),
-      });
-      const data = await res.json();
+  //     if (isExisting) {
+  //       return prev.map((r) =>
+  //         r.student_id === studentId &&
+  //         new Date(r.date).toISOString().split('T')[0] === formattedDate
+  //           ? { ...r, status: newStatus }
+  //           : r,
+  //       );
+  //     }
+  //     return [...prev, { student_id: studentId, date, status: newStatus }];
+  //   });
 
-      if (!existingRecord) {
-        setAttendanceRecords((prev) => prev.map((r) => (r.id === 'temp' ? data : r)));
-      }
-    } catch (err) {
-      alert(':');
-      console.log(err);
-    }
-  };
+  //   // 2. ՈՒՂԱՐԿՈՒՄ ԵՆՔ ԲԵՔԵՆԴ
+  //   try {
+  //     const res = await fetch(`${BASE_URL}/attendance`, {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({
+  //         student_id: studentId,
+  //         date: date,
+  //         status: newStatus,
+  //       }),
+  //     });
+
+  //     if (!res.ok) throw new Error('Server error');
+  //     const savedRecord = await res.json();
+
+  //     // 3. Թարմացնում ենք սթեյթը բազայից եկած վերջնական ID-ով
+  //     setAttendanceRecords((prev) =>
+  //       prev.map((r) =>
+  //         r.student_id === studentId &&
+  //         new Date(r.date).toDateString() === new Date(date).toDateString()
+  //           ? savedRecord
+  //           : r,
+  //       ),
+  //     );
+  //   } catch (err) {
+  //     console.error('Error saving:', err);
+  //     alert('Չհաջողվեց պահպանել');
+  //   }
+  // };
 
   if (loading)
     return (
@@ -96,16 +111,15 @@ const AttendanceModule = () => {
     );
 
   return (
-    <div className=" -translate-x-7 max-w-5xl ">
-      <div className="bg-[#448e78] p-6 text-center rounded-t-2xl  text-white text-2xl font-bold">
+    <div className="max-w-5xl mx-auto mt-10">
+      <div className="bg-[#448e78] p-6 text-center rounded-t-2xl text-white text-2xl font-bold">
         Logbook
       </div>
-
       <AttendanceTable
         students={students}
         weekDates={weekDates}
         attendanceRecords={attendanceRecords}
-        onToggle={handleToggle}
+        // onToggle={handleToggle}
       />
     </div>
   );

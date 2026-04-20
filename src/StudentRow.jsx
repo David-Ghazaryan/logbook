@@ -1,6 +1,6 @@
 import AttendanceCheckbox from './AttendanceCheckbox';
 
-const StudentRow = ({ student, weekDates, attendanceRecords, onToggle }) => {
+const StudentRow = ({ student, weekDates, attendanceRecords }) => {
   return (
     <tr className="hover:bg-slate-50 transition-colors">
       <td className="p-5 border-b sticky -left-0.5 w-12 font-semibold text-slate-700 bg-white z-10 whitespace-nowrap shadow-[inset_-1px_0_0_0_#000000]">
@@ -11,16 +11,7 @@ const StudentRow = ({ student, weekDates, attendanceRecords, onToggle }) => {
         {student.full_name}
       </td>
       {weekDates.map((date) => {
-        const record = attendanceRecords.find((r) => r.studentId === student.id && r.date === date);
-        const isPresent = record ? record.status : false;
-
-        return (
-          <AttendanceCheckbox
-            key={date}
-            isPresent={isPresent}
-            onToggle={() => onToggle(student.id, date, record)}
-          />
-        );
+        return <AttendanceCheckbox key={date} status={attendanceRecords.status} />;
       })}
     </tr>
   );

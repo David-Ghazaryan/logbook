@@ -1,6 +1,6 @@
 import StudentRow from './StudentRow';
 
-const AttendanceTable = ({ students, attendanceRecords, onToggle }) => {
+const AttendanceTable = ({ students, attendanceRecords }) => {
   const getSpecificMonthsWeekends = (year, months) => {
     const weekends = [];
     months.forEach((month) => {
@@ -69,7 +69,6 @@ const AttendanceTable = ({ students, attendanceRecords, onToggle }) => {
               student={student}
               weekDates={allWeekends}
               attendanceRecords={attendanceRecords}
-              onToggle={onToggle}
             />
           ))}
         </tbody>
