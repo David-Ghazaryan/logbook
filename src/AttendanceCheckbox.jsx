@@ -1,15 +1,22 @@
 const STATUS_DATA = {
-  present: { icon: '✅', color: '#4caf50' },
-  absent: { icon: '❌', color: '#f44336' },
-  late: { icon: '⏰', color: '#ff9800' },
-  excused: { icon: '🏥', color: '#2196f3' },
+  present: { icon: '✅', color: '#afe1b0' },
+  absent: { icon: '❌', color: '#ffb2ac' },
+  late: { icon: '⏰', color: '#ff980020' },
+  excused: { icon: '🏥', color: '#2196f320' },
 };
-console.log('status', STATUS_DATA.present);
 
-const AttendanceCheckbox = ({ status }) => (
-  <td className={`p-5 text-center border-b border-r `}>
-    {status ? STATUS_DATA[status]?.icon : '❌'}
-  </td>
-);
+const AttendanceCheckbox = ({ id, date, attendanceRecords }) => {
+  const record = attendanceRecords.find(
+    (r) => r.student_id === id && new Date(r.date).toDateString() === new Date(date).toDateString(),
+  );
+
+  const status = record?.status?.toLowerCase().trim();
+  const color = STATUS_DATA[status]?.color || '#ffb2ac';
+  return (
+    <td className="p-5 text-center border-b border-r" style={{ backgroundColor: color }}>
+      {STATUS_DATA[status]?.icon || '❌'}
+    </td>
+  );
+};
 
 export default AttendanceCheckbox;

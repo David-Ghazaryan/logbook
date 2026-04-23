@@ -11,7 +11,14 @@ const StudentRow = ({ student, weekDates, attendanceRecords }) => {
         {student.full_name}
       </td>
       {weekDates.map((date) => {
-        return <AttendanceCheckbox key={date} status={attendanceRecords.status} />;
+        return (
+          <AttendanceCheckbox
+            id={student.id}
+            date={date}
+            key={date}
+            attendanceRecords={attendanceRecords}
+          />
+        );
       })}
     </tr>
   );
