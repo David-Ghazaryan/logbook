@@ -40,16 +40,17 @@ const AttendanceModule = () => {
         .then((data) => {
           setAttendanceRecords(data);
           console.log('attendance', data);
+          setLoading(false);
         })
         .catch((err) => {
           console.error(err);
-          setLoading(false);
+          setLoading(true);
         });
     };
 
     fetchAttendance();
 
-    const interval = setInterval(fetchAttendance, 10000);
+    const interval = setInterval(fetchAttendance, 5000);
 
     return () => clearInterval(interval);
   }, []);
