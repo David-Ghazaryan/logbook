@@ -11,10 +11,10 @@ const AttendanceCheckbox = ({ id, date, attendanceRecords }) => {
   );
 
   const status = record?.status?.toLowerCase().trim();
-  const color = STATUS_DATA[status]?.color || '#ffb2ac';
+  const color = STATUS_DATA[status]?.color || '';
   return (
     <td className="p-5 text-center border-b border-r" style={{ backgroundColor: color }}>
-      {STATUS_DATA[status]?.icon || '❌'}
+      {STATUS_DATA[status]?.icon || ''}
     </td>
   );
 };
