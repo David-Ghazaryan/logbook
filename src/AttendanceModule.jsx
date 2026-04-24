@@ -34,17 +34,24 @@ const AttendanceModule = () => {
       .catch((err) => console.error(err));
   }, []);
   useEffect(() => {
-    fetch(`${BASE_URL}/attendance`)
-      .then((res) => res.json())
-      .then((data) => {
-        setAttendanceRecords(data);
-        console.log('attendance', data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
+    const fetchAttendance = () => {
+      fetch(`${BASE_URL}/attendance`)
+        .then((res) => res.json())
+        .then((data) => {
+          setAttendanceRecords(data);
+          console.log('attendance', data);
+        })
+        .catch((err) => {
+          console.error(err);
+          setLoading(false);
+        });
+    };
+
+    fetchAttendance();
+
+    const interval = setInterval(fetchAttendance, 10000);
+
+    return () => clearInterval(interval);
   }, []);
 
   // const handleToggle = async (studentId, date, existingRecord) => {
