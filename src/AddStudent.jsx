@@ -13,7 +13,6 @@ const AddStudent = ({ onAdd }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Numerical validation for phone fields
     if ((name === 'phone' || name === 'parent_phone') && !/^\d*$/.test(value)) {
       return;
     }
@@ -27,12 +26,10 @@ const AddStudent = ({ onAdd }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Ensure onAdd exists before calling
     if (onAdd) {
       onAdd(formData);
     }
 
-    // Reset form state
     setFormData({
       full_name: '',
       phone: '',
@@ -106,7 +103,7 @@ const AddStudent = ({ onAdd }) => {
       <button
         type="submit"
         className="mt-4 px-6 py-2 bg-black text-white hover:bg-gray-800 transition-colors">
-        Ավելացնել (Add)
+        Ավելացնել
       </button>
     </form>
   );

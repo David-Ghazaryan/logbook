@@ -1,10 +1,9 @@
-import { useState } from 'react'; // Added useState
+import { useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const BASE_URL = 'http://localhost:5005';
 
 const StudentsTable = ({ students, setStudents }) => {
-  // 1. State for the new student form
   const [newStudent, setNewStudent] = useState({
     full_name: '',
     phone: '',
@@ -14,7 +13,6 @@ const StudentsTable = ({ students, setStudents }) => {
     email: '',
   });
 
-  // Handle Input Changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewStudent((prev) => ({
@@ -23,7 +21,6 @@ const StudentsTable = ({ students, setStudents }) => {
     }));
   };
 
-  // 2. Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -38,9 +35,7 @@ const StudentsTable = ({ students, setStudents }) => {
 
       if (res.ok) {
         const addedStudent = await res.json();
-        // Update local state to show the new student immediately
         setStudents((prev) => [...prev, addedStudent]);
-        // Reset form
         setNewStudent({
           full_name: '',
           phone: '',
@@ -142,7 +137,6 @@ const StudentsTable = ({ students, setStudents }) => {
         </tfoot>
       </table>
 
-      {/* --- ADD STUDENT FORM --- */}
       <form
         onSubmit={handleSubmit}
         className="mt-5 w-full border-2 border-black p-4 bg-white shadow-md">
@@ -209,7 +203,7 @@ const StudentsTable = ({ students, setStudents }) => {
 
         <button
           type="submit"
-          className="mt-4 bg-green-600 text-white px-6 py-2 rounded font-bold hover:bg-green-700 transition-colors">
+          className="mt-4 bg-[#448e78] text-white px-6 py-2 rounded font-bold hover:bg-green-700 transition-colors">
           Ավելացնել
         </button>
       </form>
