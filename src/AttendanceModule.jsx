@@ -1,31 +1,29 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import AttendanceTable from './AttendanceTable';
 import CircularProgress from '@mui/material/CircularProgress';
 
 const BASE_URL = 'http://localhost:5005';
 
-const STATUS_DATA = {
-  present: { label: 'Ներկա', icon: '✅', color: '#4caf50' },
-  absent: { label: 'Բացակա', icon: '❌', color: '#f44336' },
-  late: { label: 'Ուշացած', icon: '⏰', color: '#ff9800' },
-  excused: { label: 'Հարգելի', icon: '🏥', color: '#2196f3' },
-};
+const MONTHS = [
+  { value: 1, label: 'Հունվար' },
+  { value: 2, label: 'Փետրվար' },
+  { value: 3, label: 'Մարտ' },
+  { value: 4, label: 'Ապրիլ' },
+  { value: 5, label: 'Մայիս' },
+  { value: 6, label: 'Հունիս' },
+  { value: 7, label: 'Հուլիս' },
+  { value: 8, label: 'Օգոստոս' },
+  { value: 9, label: 'Սեպտեմբեր' },
+  { value: 10, label: 'Հոկտեմբեր' },
+  { value: 11, label: 'Նոյեմբեր' },
+  { value: 12, label: 'Դեկտեմբեր' },
+];
+
 const AttendanceModule = () => {
   const [students, setStudents] = useState([]);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const weekDates = useMemo(() => {
-    const dates = [];
-    const today = new Date();
-    const mondayOffset = today.getDay() === 0 ? -6 : 1 - today.getDay();
-    for (let i = 0; i < 5; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + mondayOffset + i);
-      dates.push(date.toISOString().split('T')[0]);
-    }
-    return dates;
-  }, []);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
 
   useEffect(() => {
     fetch(`${BASE_URL}/students`)
@@ -33,13 +31,13 @@ const AttendanceModule = () => {
       .then((data) => setStudents(data))
       .catch((err) => console.error(err));
   }, []);
+
   useEffect(() => {
     const fetchAttendance = () => {
       fetch(`${BASE_URL}/attendance`)
         .then((res) => res.json())
         .then((data) => {
           setAttendanceRecords(data);
-          console.log('attendance', data);
           setLoading(false);
         })
         .catch((err) => {
@@ -47,69 +45,10 @@ const AttendanceModule = () => {
           setLoading(true);
         });
     };
-
     fetchAttendance();
-
     const interval = setInterval(fetchAttendance, 5000);
-
     return () => clearInterval(interval);
   }, []);
-
-  // const handleToggle = async (studentId, date, existingRecord) => {
-  //   const currentStatus = existingRecord?.status || 'absent';
-  //   const newStatus = NEXT_STATUS[currentStatus] || 'present';
-
-  //   // 1. ԼՈԿԱԼ ԹԱՐՄԱՑՈՒՄ (Optimistic UI)
-  //   // Օգտագործում ենք ֆունկցիոնալ թարմացում, որպեսզի սխալ չլինի
-  //   setAttendanceRecords((prev) => {
-  //     const formattedDate = new Date(date).toISOString().split('T')[0];
-
-  //     const isExisting = prev.some(
-  //       (r) =>
-  //         r.student_id === studentId &&
-  //         new Date(r.date).toISOString().split('T')[0] === formattedDate,
-  //     );
-
-  //     if (isExisting) {
-  //       return prev.map((r) =>
-  //         r.student_id === studentId &&
-  //         new Date(r.date).toISOString().split('T')[0] === formattedDate
-  //           ? { ...r, status: newStatus }
-  //           : r,
-  //       );
-  //     }
-  //     return [...prev, { student_id: studentId, date, status: newStatus }];
-  //   });
-
-  //   // 2. ՈՒՂԱՐԿՈՒՄ ԵՆՔ ԲԵՔԵՆԴ
-  //   try {
-  //     const res = await fetch(`${BASE_URL}/attendance`, {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({
-  //         student_id: studentId,
-  //         date: date,
-  //         status: newStatus,
-  //       }),
-  //     });
-
-  //     if (!res.ok) throw new Error('Server error');
-  //     const savedRecord = await res.json();
-
-  //     // 3. Թարմացնում ենք սթեյթը բազայից եկած վերջնական ID-ով
-  //     setAttendanceRecords((prev) =>
-  //       prev.map((r) =>
-  //         r.student_id === studentId &&
-  //         new Date(r.date).toDateString() === new Date(date).toDateString()
-  //           ? savedRecord
-  //           : r,
-  //       ),
-  //     );
-  //   } catch (err) {
-  //     console.error('Error saving:', err);
-  //     alert('Չհաջողվեց պահպանել');
-  //   }
-  // };
 
   if (loading)
     return (
@@ -120,14 +59,25 @@ const AttendanceModule = () => {
 
   return (
     <div className="max-w-5xl mx-auto mt-10">
-      <div className="bg-[#448e78] p-6 text-center rounded-t-2xl text-white text-2xl font-bold">
-        Logbook
+      <div className="bg-[#448e78] p-6 rounded-t-2xl text-white flex justify-between items-center">
+        <span className="text-2xl font-bold">Logbook</span>
+
+        <select
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+          className="bg-white text-slate-800 px-5 py-2 rounded-lg  font-medium outline-none border-none shadow-md">
+          {MONTHS.map((month) => (
+            <option key={month.value} value={month.value}>
+              {month.label} 2026
+            </option>
+          ))}
+        </select>
       </div>
+
       <AttendanceTable
         students={students}
-        weekDates={weekDates}
         attendanceRecords={attendanceRecords}
-        // onToggle={handleToggle}
+        selectedMonth={selectedMonth}
       />
     </div>
   );
