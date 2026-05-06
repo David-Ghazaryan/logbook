@@ -10,7 +10,13 @@ const GROUPS = [
   { id: 4, label: 'Խումբ 4' },
 ];
 
-const StudentsTable = ({ students, setStudents }) => {
+const StudentsTable = ({ students, setStudents, attendance }) => {
+  const getAttendanceCount = (studentId, statusType) => {
+    if (!attendance) return 0;
+    return attendance.filter(
+      (record) => record.student_id === studentId && record.status === statusType,
+    ).length;
+  };
   const [filterGroup, setFilterGroup] = useState('all');
 
   const [newStudent, setNewStudent] = useState({
@@ -23,7 +29,6 @@ const StudentsTable = ({ students, setStudents }) => {
     group_id: 1,
   });
 
-  // Ֆիլտրման տրամաբանությունը
   const filteredStudents =
     filterGroup === 'all' ? students : students.filter((s) => s.group_id === parseInt(filterGroup));
 
@@ -113,13 +118,24 @@ const StudentsTable = ({ students, setStudents }) => {
             <th className="p-3 border">Խումբ</th>
             <th className="p-3 border">Հեռախոս</th>
             <th className="p-3 border">Ծնողի հեռախոս</th>
-            <th className="p-3 border">Ծննդյան օր</th>
+            <th className="px-6 border">Ծննդյան օր</th>
             <th className="p-3 border">Ընդունման օր</th>
             <th className="p-3 border">Email</th>
-            <th className="p-3 border text-red-600">Ջնջել</th>
+            {/* <th className="p-3 border" style={{ backgroundColor: '#afe1b0' }}>
+              ✅
+            </th> */}
+            <th className="p-5 border" style={{ backgroundColor: '#ffb2ac' }}>
+              ❌
+            </th>
+            <th className="p-5 border" style={{ backgroundColor: '#ff980020' }}>
+              ⏰
+            </th>
+            <th className="p-5 border" style={{ backgroundColor: '#2196f320' }}>
+              🏥
+            </th>
+            <th className="p-3 border">Ջնջել</th>
           </tr>
         </thead>
-
         <tbody>
           {filteredStudents.length === 0 ? (
             <tr>
@@ -138,6 +154,11 @@ const StudentsTable = ({ students, setStudents }) => {
                 <td className="p-3 border">{formatDate(student.birthday)}</td>
                 <td className="p-3 border">{student.admission_day}</td>
                 <td className="p-3 border">{student.email}</td>
+                <td className="p-3 border font-bold">{getAttendanceCount(student.id, 'absent')}</td>
+                <td className="p-3 border font-bold ">{getAttendanceCount(student.id, 'late')}</td>
+                <td className="p-3 border font-bold">
+                  {getAttendanceCount(student.id, 'excused')}
+                </td>
                 <td className="p-3 border text-center">
                   <button
                     onClick={() => handleDelete(student.id)}
@@ -152,7 +173,7 @@ const StudentsTable = ({ students, setStudents }) => {
 
         <tfoot className="bg-gray-100 border border-black font-bold text-center">
           <tr className="text-black border-t-2 border-b-2 border-black">
-            <td colSpan="9" className="p-3">
+            <td colSpan="12" className="p-3">
               <div className="grid grid-cols-4 gap-2 text-sm">
                 <div className="border-r">
                   Խումբ 1: {students.filter((s) => s.group_id === 1).length} հոգի
@@ -168,7 +189,7 @@ const StudentsTable = ({ students, setStudents }) => {
             </td>
           </tr>
           <tr>
-            <td colSpan="9" className="p-3 text-black text-base">
+            <td colSpan="12" className="p-3 text-black text-base">
               Ընդհանուր: {students.length} հոգի{' '}
               {filterGroup !== 'all' && `(Ֆիլտրված: ${filteredStudents.length})`}
             </td>
