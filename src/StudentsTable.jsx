@@ -20,6 +20,7 @@ const StudentsTable = ({ students, setStudents, attendance }) => {
   const [filterGroup, setFilterGroup] = useState('all');
 
   const [newStudent, setNewStudent] = useState({
+    id: '',
     full_name: '',
     phone: '',
     parent_phone: '',
@@ -36,7 +37,7 @@ const StudentsTable = ({ students, setStudents, attendance }) => {
     const { name, value } = e.target;
     setNewStudent((prev) => ({
       ...prev,
-      [name]: name === 'group_id' ? parseInt(value) : value,
+      [name]: name === 'group_id' || name === 'id' ? parseInt(value) || '' : value,
     }));
   };
 
@@ -53,6 +54,7 @@ const StudentsTable = ({ students, setStudents, attendance }) => {
         const addedStudent = await res.json();
         setStudents((prev) => [...prev, addedStudent]);
         setNewStudent({
+          id: '',
           full_name: '',
           phone: '',
           parent_phone: '',
@@ -201,7 +203,18 @@ const StudentsTable = ({ students, setStudents, attendance }) => {
         onSubmit={handleSubmit}
         className="mt-5 w-full border-2 border-black p-4 bg-white shadow-md">
         <h3 className="text-black font-bold mb-3">Ավելացնել նոր ուսանող</h3>
-        <div className="grid grid-cols-7 gap-3 mt-3">
+        <div className="grid grid-cols-8 gap-3 mt-3">
+          <input
+            required
+            type="number"
+            name="id"
+            min="1"
+            max="127"
+            value={newStudent.id}
+            onChange={handleChange}
+            className="border border-black p-2 w-full text-black"
+            placeholder="ID (1-127)"
+          />
           <input
             required
             type="text"
