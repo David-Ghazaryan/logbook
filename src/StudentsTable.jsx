@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import { useAuth } from './login/AuthContext';
 const BASE_URL = 'http://localhost:5005';
 
 const GROUPS = [
@@ -11,6 +11,7 @@ const GROUPS = [
 ];
 
 const StudentsTable = ({ students, setStudents, attendance }) => {
+  const { user } = useAuth();
   const getAttendanceCount = (studentId, statusType) => {
     if (!attendance) return 0;
     return attendance.filter(
@@ -70,13 +71,20 @@ const StudentsTable = ({ students, setStudents, attendance }) => {
   };
 
   const handleDelete = async (id) => {
+    if (user?.role !== 'admin') {
+      alert('Դուք չունեք թույլտվություն ջնջելու համար:');
+      return;
+    }
+
     const confirmDelete = window.confirm('Վստա՞հ եք որ ուզում եք ջնջել այս ուսանողին');
     if (!confirmDelete) return;
+
     try {
       const res = await fetch(`${BASE_URL}/students/${id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       });
+
       if (res.ok) {
         setStudents((prev) => prev.filter((s) => s.id !== id));
       }
@@ -94,7 +102,7 @@ const StudentsTable = ({ students, setStudents, attendance }) => {
   if (!students) return <div className="p-10 text-center text-slate-500">Loading...</div>;
 
   return (
-    <div className="overflow-x-auto p-4">
+    <div className="overflow-x-auto p-4 border border-black bg-white">
       <div className="mb-4 flex items-center gap-3 bg-slate-100 p-3 rounded-lg border border-black w-fit">
         <span className="font-bold text-slate-700">Ֆիլտրել ըստ խմբի:</span>
         <select

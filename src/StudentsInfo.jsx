@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import StudentsTable from './StudentsTable';
 const BASE_URL = 'http://localhost:5005';
+import { useNavigate } from 'react-router-dom';
 
 const StudentsInfo = () => {
+  const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -53,17 +55,24 @@ const StudentsInfo = () => {
     );
 
   return (
-    <div className=" -translate-x-10 max-w-6xl border border-black rounded-t-2xl ">
-      <div className="bg-[#448e78] p-6 text-center rounded-t-2xl  text-white text-2xl font-bold">
-        Students info
-      </div>
+    <div className="p-10 bg-white flex items-start">
+      <button
+        onClick={() => navigate('/')}
+        className="-translate-x-32 w-30 h-10 cursor-pointer bg-white rounded-xl text-[#448e78] font-bold border px-5">
+        Back
+      </button>
+      <div className="-translate-x-25 w-280">
+        <div className="bg-[#448e78] p-6 text-center rounded-t-2xl  text-white text-2xl font-bold">
+          Students info
+        </div>
 
-      <StudentsTable
-        students={students}
-        setStudents={setStudents}
-        attendance={attendance}
-        setAttendance={setAttendance}
-      />
+        <StudentsTable
+          students={students}
+          setStudents={setStudents}
+          attendance={attendance}
+          setAttendance={setAttendance}
+        />
+      </div>
     </div>
   );
 };

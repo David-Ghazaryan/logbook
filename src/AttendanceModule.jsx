@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AttendanceTable from './AttendanceTable';
 import CircularProgress from '@mui/material/CircularProgress';
-
+import { useNavigate } from 'react-router-dom';
 const BASE_URL = 'http://localhost:5005';
 
 const MONTHS = [
@@ -19,7 +19,6 @@ const MONTHS = [
   { value: 12, label: 'Դեկտեմբեր' },
 ];
 
-// Խմբերի ցուցակը
 const GROUPS = [
   { id: 1, label: 'Խումբ 1' },
   { id: 2, label: 'Խումբ 2' },
@@ -33,7 +32,7 @@ const AttendanceModule = () => {
   const [loading, setLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedGroup, setSelectedGroup] = useState(1);
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetch(`${BASE_URL}/students`)
       .then((res) => res.json())
@@ -68,39 +67,46 @@ const AttendanceModule = () => {
     );
 
   return (
-    <div className="max-w-5xl mx-auto mt-10 px-4 ">
-      <div className="bg-[#448e78] p-6 rounded-t-2xl text-white flex flex-wrap gap-4 justify-between items-center">
-        <span className="text-2xl font-bold">Logbook</span>
+    <div className="flex max-w-7xl mx-10 py-10 bg-white">
+      <button
+        onClick={() => navigate('/')}
+        className="-translate-x-28 w-30 h-10 cursor-pointer bg-white rounded-xl text-[#448e78] font-bold border px-5">
+        Back
+      </button>
+      <div className="-translate-x-15 w-260">
+        <div className="bg-[#448e78] p-6 rounded-t-2xl text-white flex flex-wrap gap-4 justify-between items-center">
+          <span className="text-2xl font-bold">Logbook</span>
 
-        <div className="flex gap-4">
-          <select
-            value={selectedGroup}
-            onChange={(e) => setSelectedGroup(parseInt(e.target.value))}
-            className="bg-white text-slate-800 px-4 py-2 rounded-lg font-medium outline-none shadow-md">
-            {GROUPS.map((group) => (
-              <option key={group.id} value={group.id}>
-                {group.label}
-              </option>
-            ))}
-          </select>
-          <select
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-            className="bg-white text-slate-800 px-4 py-2 rounded-lg font-medium outline-none shadow-md">
-            {MONTHS.map((month) => (
-              <option key={month.value} value={month.value}>
-                {month.label} 2026
-              </option>
-            ))}
-          </select>
+          <div className="flex gap-4 ">
+            <select
+              value={selectedGroup}
+              onChange={(e) => setSelectedGroup(parseInt(e.target.value))}
+              className="bg-white text-slate-800 px-4 py-2 rounded-lg font-medium outline-none shadow-md">
+              {GROUPS.map((group) => (
+                <option key={group.id} value={group.id}>
+                  {group.label}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+              className="bg-white text-slate-800 px-4 py-2 rounded-lg font-medium outline-none shadow-md">
+              {MONTHS.map((month) => (
+                <option key={month.value} value={month.value}>
+                  {month.label} 2026
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
 
-      <AttendanceTable
-        students={filteredStudents}
-        attendanceRecords={attendanceRecords}
-        selectedMonth={selectedMonth}
-      />
+        <AttendanceTable
+          students={filteredStudents}
+          attendanceRecords={attendanceRecords}
+          selectedMonth={selectedMonth}
+        />
+      </div>
     </div>
   );
 };

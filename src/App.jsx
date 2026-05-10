@@ -1,50 +1,42 @@
-import { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './login/AuthContext';
 import LoginPage from './login/LoginPage';
 import AdminDashboard from './login/AdminDashboard';
+import ClientDashboard from './login/ClientDashboard';
 import AttendanceModule from './AttendanceModule';
 import StudentsInfo from './StudentsInfo';
+
 const MainApp = () => {
-  const { isAuthenticated } = useAuth();
-  const [currentPage, setCurrentPage] = useState('dashboard');
+  const { isAuthenticated, user } = useAuth();
 
-  if (!isAuthenticated) return <LoginPage />;
-
-  if (currentPage === 'journal') {
+  if (!isAuthenticated) {
     return (
-      <div className="flex w-full h-full bg-white p-5">
-        <button
-          onClick={() => setCurrentPage('dashboard')}
-          className="-translate-x-26 w-16 h-10 mb-6 bg-white border  text-[#448e78] border-[#448e78] px-3 py-2 hover:shadow-xl hover:-translate-y-0.5 hover:bg-[#e9f0ee]  cursor-pointer rounded-xl shadow-sm transition flex items-center gap-2 font-medium">
-          <span>Back</span>
-        </button>
-
-        <AttendanceModule />
-      </div>
-    );
-  }
-  if (currentPage === 'info') {
-    return (
-      <div className="flex w-310  h-full bg-slate-50 p-5">
-        <button
-          onClick={() => setCurrentPage('dashboard')}
-          className="-translate-x-26 w-16 h-10 mb-6 bg-white border  text-[#448e78] border-[#448e78] px-3 py-2 hover:shadow-xl hover:-translate-y-0.5 hover:bg-[#e9f0ee]  cursor-pointer rounded-xl shadow-sm transition flex items-center gap-2 font-medium">
-          <span>Back</span>
-        </button>
-
-        <StudentsInfo />
-      </div>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
     );
   }
 
-  return <AdminDashboard onNavigate={setCurrentPage} />;
+  return (
+    <Routes>
+      <Route path="/" element={user?.role === 'admin' ? <AdminDashboard /> : <ClientDashboard />} />
+
+      <Route path="/journal" element={<AttendanceModule />} />
+      <Route path="/info" element={<StudentsInfo />} />
+
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
+  );
 };
 
 function App() {
   return (
-    <AuthProvider>
-      <MainApp />
-    </AuthProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <MainApp />
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

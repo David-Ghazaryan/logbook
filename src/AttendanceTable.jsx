@@ -29,8 +29,8 @@ const AttendanceTable = ({ students, attendanceRecords, selectedMonth }) => {
   }
 
   return (
-    <div className="overflow-x-auto border shadow-sm bg-white">
-      <table className="w-full text-left border-collapse">
+    <div className="overflow-x-auto  border shadow-sm bg-white">
+      <table className=" text-left border-collapse ">
         <thead>
           <tr className="bg-slate-50 text-slate-600 text-[10px] tracking-wider">
             <th className="p-3 text-sm sticky left-0 bg-slate-50 z-10 border-b border-r text-center">
