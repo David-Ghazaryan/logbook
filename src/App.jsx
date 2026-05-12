@@ -5,6 +5,7 @@ import AdminDashboard from './login/AdminDashboard';
 import ClientDashboard from './login/ClientDashboard';
 import AttendanceModule from './AttendanceModule';
 import StudentsInfo from './StudentsInfo';
+import ArchivedStudents from './ArchivedStudents';
 
 const MainApp = () => {
   const { isAuthenticated, user } = useAuth();
@@ -24,6 +25,7 @@ const MainApp = () => {
 
       <Route path="/journal" element={<AttendanceModule />} />
       <Route path="/info" element={<StudentsInfo />} />
+      <Route path="/archive" element={<ArchivedStudents />} />
 
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>

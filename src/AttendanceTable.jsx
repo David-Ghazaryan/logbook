@@ -32,11 +32,11 @@ const AttendanceTable = ({ students, attendanceRecords, selectedMonth }) => {
     <div className="overflow-x-auto  border shadow-sm bg-white">
       <table className=" text-left border-collapse ">
         <thead>
-          <tr className="bg-slate-50 text-slate-600 text-[10px] tracking-wider">
-            <th className="p-3 text-sm sticky left-0 bg-slate-50 z-10 border-b border-r text-center">
+          <tr className="bg-slate-100 text-slate-600 text-[10px] tracking-wider">
+            <th className="p-3 text-sm sticky left-0 bg-slate-100 z-10 border-b border-r text-center">
               ID
             </th>
-            <th className="p-5 text-sm sticky left-12 bg-slate-50 z-10 min-w-52 border-b border-r">
+            <th className="p-5 text-sm sticky left-12 bg-slate-100 z-10 min-w-52 border-b border-r">
               Անուն Ազգանուն
             </th>
 

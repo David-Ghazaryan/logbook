@@ -72,24 +72,41 @@ const StudentsTable = ({ students, setStudents, attendance }) => {
 
   const handleDelete = async (id) => {
     if (user?.role !== 'admin') {
-      alert('Դուք չունեք թույլտվություն ջնջելու համար:');
+      alert('Դուք չունեք թույլտվություն:');
       return;
     }
 
-    const confirmDelete = window.confirm('Վստա՞հ եք որ ուզում եք ջնջել այս ուսանողին');
+    const confirmDelete = window.confirm(
+      'Վստա՞հ եք, որ ուզում եք արխիվացնել և ջնջել այս ուսանողին:',
+    );
     if (!confirmDelete) return;
 
+    const studentToArchive = students.find((s) => s.id === id);
+
     try {
-      const res = await fetch(`${BASE_URL}/students/${id}`, {
-        method: 'DELETE',
+      const archiveRes = await fetch(`${BASE_URL}/archive`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...studentToArchive,
+          deletedAt: new Date().toISOString(),
+        }),
       });
 
-      if (res.ok) {
-        setStudents((prev) => prev.filter((s) => s.id !== id));
+      if (archiveRes.ok) {
+        const deleteRes = await fetch(`${BASE_URL}/students/${id}`, {
+          method: 'DELETE',
+        });
+
+        if (deleteRes.ok) {
+          setStudents((prev) => prev.filter((s) => s.id !== id));
+          alert('Ուսանողը տեղափոխվեց արխիվ:');
+        }
+      } else {
+        alert('Արխիվացման սխալ տեղի ունեցավ:');
       }
     } catch (err) {
-      console.error(err);
+      console.error('Error during archiving:', err);
     }
   };
 
@@ -122,7 +139,7 @@ const StudentsTable = ({ students, setStudents, attendance }) => {
 
       <table className="w-full border border-collapse">
         <thead>
-          <tr className="bg-slate-50 text-slate-600 text-sm">
+          <tr className="bg-slate-100 text-slate-600 text-sm">
             <th className="p-3 border">ID</th>
             <th className="p-3 border">Անուն Ազգանուն</th>
             <th className="p-3 border">Խումբ</th>
