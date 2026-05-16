@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useAuth } from './login/AuthContext';
-const BASE_URL = 'http://localhost:5005';
+import { BASE_URL } from './config';
 
 const GROUPS = [
   { id: 1, label: 'Խումբ 1' },
@@ -12,7 +12,7 @@ const GROUPS = [
 
 const StudentsTable = ({ students, setStudents, attendance }) => {
   const { user } = useAuth();
-
+  const groupStyle = 'bg-white p-2 rounded-lg border border-black text-black shadow-sm';
   const getAttendanceCount = (studentId, statusType) => {
     if (!attendance) return 0;
     return attendance.filter(
@@ -177,43 +177,37 @@ const StudentsTable = ({ students, setStudents, attendance }) => {
               ))
             )}
           </tbody>
-          <tfoot className="bg-slate-50 font-semibold text-slate-700 border-t">
-            <tr className="border-b">
-              <td colSpan="3" className="p-4">
-                <div className="grid grid-cols-1 md:grid-cols-4  gap-4 text-xs md:text-sm text-center">
-                  <div className="bg-white p-2 rounded-lg border shadow-sm">
-                    Խումբ 1:{' '}
-                    <span className="font-bold text-[#448e78]">
-                      {students.filter((s) => s.group_id === 1).length}
-                    </span>{' '}
-                    հոգի
-                  </div>
-                  <div className="bg-white p-2 rounded-lg border shadow-sm">
-                    Խումբ 2:{' '}
-                    <span className="font-bold text-[#448e78]">
-                      {students.filter((s) => s.group_id === 2).length}
-                    </span>{' '}
-                    հոգի
-                  </div>
-                  <div className="bg-white p-2 rounded-lg border shadow-sm">
-                    Խումբ 3:{' '}
-                    <span className="font-bold text-[#448e78]">
-                      {students.filter((s) => s.group_id === 3).length}
-                    </span>{' '}
-                    հոգի
-                  </div>
-                  <div className="bg-white p-2 rounded-lg border shadow-sm">
-                    Խումբ 4:{' '}
-                    <span className="font-bold text-[#448e78]">
-                      {students.filter((s) => s.group_id === 4).length}
-                    </span>{' '}
-                    հոգի
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tfoot>
         </table>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-4  gap-4 text-xs md:text-sm text-center">
+        <div className={`${groupStyle}`}>
+          Խումբ 1:{' '}
+          <span className="font-bold text-[#448e78]">
+            {students.filter((s) => s.group_id === 1).length}
+          </span>{' '}
+          հոգի
+        </div>
+        <div className={`${groupStyle}`}>
+          Խումբ 2:{' '}
+          <span className="font-bold text-[#448e78]">
+            {students.filter((s) => s.group_id === 2).length}
+          </span>{' '}
+          հոգի
+        </div>
+        <div className={`${groupStyle}`}>
+          Խումբ 3:{' '}
+          <span className="font-bold text-[#448e78]">
+            {students.filter((s) => s.group_id === 3).length}
+          </span>{' '}
+          հոգի
+        </div>
+        <div className={`${groupStyle}`}>
+          Խումբ 4:{' '}
+          <span className="font-bold text-[#448e78]">
+            {students.filter((s) => s.group_id === 4).length}
+          </span>{' '}
+          հոգի
+        </div>
       </div>
       <div className="p-3 text-center text-slate-800 text-base font-bold">
         Ընդհանուր այս ցուցակում: {students.length} հոգի

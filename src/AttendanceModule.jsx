@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AttendanceTable from './AttendanceTable';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
-const BASE_URL = 'http://localhost:5005';
+import { BASE_URL } from './config';
 
 const MONTHS = [
   { value: 1, label: 'Հունվար' },

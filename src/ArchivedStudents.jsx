@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
-const BASE_URL = 'http://localhost:5005';
+import { BASE_URL } from './config';
+
 import { useNavigate } from 'react-router-dom';
 import ArchivedStudentsTable from './ArchivedStudentsTable';
 

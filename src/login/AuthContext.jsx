@@ -1,5 +1,5 @@
 import { createContext, useState, useContext } from 'react';
-
+import { BASE_URL } from '../config';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -13,21 +13,29 @@ export const AuthProvider = ({ children }) => {
     }
   });
 
-  const login = (username, password) => {
-    let userData = null;
+  const login = async (username, password) => {
+    try {
+      const response = await fetch(`${BASE_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    if (username === 'admin' && password === 'admin') {
-      userData = { username: 'admin', role: 'admin' };
-    } else if (username === 'user' && password === 'user') {
-      userData = { username: 'user', role: 'client' };
-    }
+      if (response.ok) {
+        const userData = await response.json();
 
-    if (userData) {
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
-      return userData.role;
+        localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
+        return userData.role;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Login request failed:', error);
+      return null;
     }
-    return null;
   };
 
   const logout = () => {
