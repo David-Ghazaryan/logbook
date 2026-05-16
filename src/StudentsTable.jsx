@@ -12,13 +12,13 @@ const GROUPS = [
 
 const StudentsTable = ({ students, setStudents, attendance }) => {
   const { user } = useAuth();
+
   const getAttendanceCount = (studentId, statusType) => {
     if (!attendance) return 0;
     return attendance.filter(
       (record) => record.student_id === studentId && record.status === statusType,
     ).length;
   };
-  const [filterGroup, setFilterGroup] = useState('all');
 
   const [newStudent, setNewStudent] = useState({
     id: '',
@@ -30,9 +30,6 @@ const StudentsTable = ({ students, setStudents, attendance }) => {
     email: '',
     group_id: 1,
   });
-
-  const filteredStudents =
-    filterGroup === 'all' ? students : students.filter((s) => s.group_id === parseInt(filterGroup));
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -119,195 +116,225 @@ const StudentsTable = ({ students, setStudents, attendance }) => {
   if (!students) return <div className="p-10 text-center text-slate-500">Loading...</div>;
 
   return (
-    <div className="overflow-x-auto p-4 border border-black bg-white">
-      <div className="mb-4 flex items-center gap-3 bg-slate-100 p-3 rounded-lg border border-black w-fit">
-        <span className="font-bold text-slate-700">Ֆիլտրել ըստ խմբի:</span>
-        <select
-          className="p-2 border border-black rounded-md outline-none bg-white font-medium"
-          value={filterGroup}
-          onChange={(e) => setFilterGroup(e.target.value)}>
-          <option value="all" className="text-black">
-            Բոլորը
-          </option>
-          {GROUPS.map((g) => (
-            <option className="text-black" key={g.id} value={g.id}>
-              {g.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <table className="w-full border border-collapse">
-        <thead>
-          <tr className="bg-slate-100 text-slate-600 text-sm">
-            <th className="p-3 border">ID</th>
-            <th className="p-3 border">Անուն Ազգանուն</th>
-            <th className="p-3 border">Խումբ</th>
-            <th className="p-3 border">Հեռախոս</th>
-            <th className="p-3 border">Ծնողի հեռախոս</th>
-            <th className="px-6 border">Ծննդյան օր</th>
-            <th className="p-3 border">Ընդունման օր</th>
-            <th className="p-3 border">Email</th>
-            {/* <th className="p-3 border" style={{ backgroundColor: '#afe1b0' }}>
-              ✅
-            </th> */}
-            <th className="p-5 border" style={{ backgroundColor: '#ffb2ac' }}>
-              ❌
-            </th>
-            <th className="p-5 border" style={{ backgroundColor: '#ff980020' }}>
-              ⏰
-            </th>
-            <th className="p-5 border" style={{ backgroundColor: '#2196f320' }}>
-              🏥
-            </th>
-            <th className="p-3 border">Ջնջել</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredStudents.length === 0 ? (
-            <tr>
-              <td colSpan="9" className="p-10 text-center text-slate-500 italic">
-                Այս խմբում ուսանողներ չկան:
-              </td>
+    <div className="w-full flex flex-col gap-6 bg-white">
+      <div className="overflow-x-auto w-full">
+        <table className="w-full min-w-max border-collapse text-left text-sm text-slate-600">
+          <thead>
+            <tr className="bg-slate-100 text-slate-600 font-semibold border-b">
+              <th className="p-3 border w-10 text-center">ID</th>
+              <th className="p-3 border w-50 ">Անուն Ազգանուն</th>
+              <th className="p-3 border w-10 text-center">Խումբ</th>
+              <th className="p-3 border text-center">Հեռախոս</th>
+              <th className="p-3 border text-center">Ծնողի հեռախոս</th>
+              <th className="px-6 border text-center">Ծննդյան օր</th>
+              <th className="p-3 border text-center">Ընդունման օր</th>
+              <th className="p-3 border text-center">Email</th>
+              <th className="p-3 border border-black text-center bg-red-50  text-red-600">❌ </th>
+              <th className="p-3 border border-black text-center bg-orange-50 text-orange-600">
+                ⏰
+              </th>
+              <th className="p-3 border border-black text-center bg-blue-50 text-blue-600">🏥 </th>
+              <th className="p-3 text-center">Ջնջել</th>
             </tr>
-          ) : (
-            filteredStudents.map((student) => (
-              <tr key={student.id} className="text-slate-600 hover:bg-slate-50">
-                <td className="p-3 border">{student.id}</td>
-                <td className="p-3 border text-start">{student.full_name}</td>
-                <td className="p-3 border text-center font-bold">{student.group_id}</td>
-                <td className="p-3 border">{student.phone}</td>
-                <td className="py-3 px-1 border">{student.parent_phone}</td>
-                <td className="p-3 border">{formatDate(student.birthday)}</td>
-                <td className="p-3 border">{student.admission_day}</td>
-                <td className="p-3 border">{student.email}</td>
-                <td className="p-3 border font-bold">{getAttendanceCount(student.id, 'absent')}</td>
-                <td className="p-3 border font-bold ">{getAttendanceCount(student.id, 'late')}</td>
-                <td className="p-3 border font-bold">
-                  {getAttendanceCount(student.id, 'excused')}
-                </td>
-                <td className="p-3 border text-center">
-                  <button
-                    onClick={() => handleDelete(student.id)}
-                    className="text-red-500 hover:scale-110">
-                    <DeleteIcon />
-                  </button>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {students.length === 0 ? (
+              <tr>
+                <td colSpan="12" className="p-10 text-center text-slate-400 italic bg-slate-50">
+                  Ուսանողներ չեն գտնվել:
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-
-        <tfoot className="bg-gray-100 border border-black font-bold text-center">
-          <tr className="text-black border-t-2 border-b-2 border-black">
-            <td colSpan="12" className="p-3">
-              <div className="grid grid-cols-4 gap-2 text-sm">
-                <div className="border-r">
-                  Խումբ 1: {students.filter((s) => s.group_id === 1).length} հոգի
+            ) : (
+              students.map((student) => (
+                <tr key={student.id} className="hover:bg-slate-50 transition-colors">
+                  <td className="p-3 border font-medium text-slate-800 text-center">
+                    {student.id}
+                  </td>
+                  <td className="p-3 border font-medium text-slate-900">{student.full_name}</td>
+                  <td className="p-3 border font-bold text-center">{student.group_id}</td>
+                  <td className="p-3 border text-center">{student.phone}</td>
+                  <td className="p-3 border text-center">{student.parent_phone}</td>
+                  <td className="p-3 border text-center">{formatDate(student.birthday)}</td>
+                  <td className="p-3 border text-center">{student.admission_day}</td>
+                  <td className="p-3 border text-center">{student.email}</td>
+                  <td className="p-3 border border-black text-center font-bold text-red-600 ">
+                    {getAttendanceCount(student.id, 'absent')}
+                  </td>
+                  <td className="p-3 border border-black text-center font-bold text-orange-600 ">
+                    {getAttendanceCount(student.id, 'late')}
+                  </td>
+                  <td className="p-3 border border-black text-center font-bold text-blue-600 ">
+                    {getAttendanceCount(student.id, 'excused')}
+                  </td>
+                  <td className="p-3 text-center border border-black">
+                    <button
+                      onClick={() => handleDelete(student.id)}
+                      className="text-red-500 hover:text-red-700 hover:scale-110 transition-transform cursor-pointer">
+                      <DeleteIcon fontSize="small" />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+          <tfoot className="bg-slate-50 font-semibold text-slate-700 border-t">
+            <tr className="border-b">
+              <td colSpan="3" className="p-4">
+                <div className="grid grid-cols-1 md:grid-cols-4  gap-4 text-xs md:text-sm text-center">
+                  <div className="bg-white p-2 rounded-lg border shadow-sm">
+                    Խումբ 1:{' '}
+                    <span className="font-bold text-[#448e78]">
+                      {students.filter((s) => s.group_id === 1).length}
+                    </span>{' '}
+                    հոգի
+                  </div>
+                  <div className="bg-white p-2 rounded-lg border shadow-sm">
+                    Խումբ 2:{' '}
+                    <span className="font-bold text-[#448e78]">
+                      {students.filter((s) => s.group_id === 2).length}
+                    </span>{' '}
+                    հոգի
+                  </div>
+                  <div className="bg-white p-2 rounded-lg border shadow-sm">
+                    Խումբ 3:{' '}
+                    <span className="font-bold text-[#448e78]">
+                      {students.filter((s) => s.group_id === 3).length}
+                    </span>{' '}
+                    հոգի
+                  </div>
+                  <div className="bg-white p-2 rounded-lg border shadow-sm">
+                    Խումբ 4:{' '}
+                    <span className="font-bold text-[#448e78]">
+                      {students.filter((s) => s.group_id === 4).length}
+                    </span>{' '}
+                    հոգի
+                  </div>
                 </div>
-                <div className="border-r">
-                  Խումբ 2: {students.filter((s) => s.group_id === 2).length} հոգի
-                </div>
-                <div className="border-r">
-                  Խումբ 3: {students.filter((s) => s.group_id === 3).length} հոգի
-                </div>
-                <div>Խումբ 4: {students.filter((s) => s.group_id === 4).length} հոգի</div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td colSpan="12" className="p-3 text-black text-base">
-              Ընդհանուր: {students.length} հոգի{' '}
-              {filterGroup !== 'all' && `(Ֆիլտրված: ${filteredStudents.length})`}
-            </td>
-          </tr>
-        </tfoot>
-      </table>
-
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div className="p-3 text-center text-slate-800 text-base font-bold">
+        Ընդհանուր այս ցուցակում: {students.length} հոգի
+      </div>
       <form
         onSubmit={handleSubmit}
-        className="mt-5 w-full border-2 border-black p-4 bg-white shadow-md">
-        <h3 className="text-black font-bold mb-3">Ավելացնել նոր ուսանող</h3>
-        <div className="grid grid-cols-8 gap-3 mt-3">
-          <input
-            required
-            type="number"
-            name="id"
-            min="1"
-            max="127"
-            value={newStudent.id}
-            onChange={handleChange}
-            className="border border-black p-2 w-full text-black"
-            placeholder="ID (1-127)"
-          />
-          <input
-            required
-            type="text"
-            name="full_name"
-            value={newStudent.full_name}
-            onChange={handleChange}
-            className="border border-black p-2 w-full text-black"
-            placeholder="Անուն Ազգանուն"
-          />
-          <select
-            name="group_id"
-            value={newStudent.group_id}
-            onChange={handleChange}
-            className="border border-black p-2 w-full text-black">
-            {GROUPS.map((g) => (
-              <option key={g.id} value={g.id}>
-                {g.label}
-              </option>
-            ))}
-          </select>
-          <input
-            required
-            type="text"
-            name="phone"
-            value={newStudent.phone}
-            onChange={handleChange}
-            className="border border-black p-2 w-full text-black"
-            placeholder="Հեռախոս"
-          />
-          <input
-            required
-            type="text"
-            name="parent_phone"
-            value={newStudent.parent_phone}
-            onChange={handleChange}
-            className="border border-black p-2 w-full text-black"
-            placeholder="Ծնողի հեռախոս"
-          />
-          <input
-            required
-            type="date"
-            name="birthday"
-            value={newStudent.birthday}
-            onChange={handleChange}
-            className="border border-black p-2 w-full text-black"
-          />
-          <input
-            required
-            type="date"
-            name="admission_day"
-            value={newStudent.admission_day}
-            onChange={handleChange}
-            className="border border-black p-2 w-full text-black"
-          />
-          <input
-            required
-            type="email"
-            name="email"
-            value={newStudent.email}
-            onChange={handleChange}
-            className="border border-black p-2 w-full text-black"
-            placeholder="Email"
-          />
+        className="w-full border rounded-2xl p-4 md:p-6 bg-slate-50 shadow-sm mt-4">
+        <h3 className="text-slate-800 font-bold text-lg mb-4">Ավելացնել նոր ուսանող</h3>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-semibold text-slate-500 pl-1">ID (1-127)</span>
+            <input
+              required
+              type="number"
+              name="id"
+              min="1"
+              max="127"
+              value={newStudent.id}
+              onChange={handleChange}
+              className="border rounded-lg p-2 w-full text-slate-800 bg-white outline-none focus:border-[#448e78]"
+              placeholder="ID"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-semibold text-slate-500 pl-1">Անուն Ազգանուն</span>
+            <input
+              required
+              type="text"
+              name="full_name"
+              value={newStudent.full_name}
+              onChange={handleChange}
+              className="border rounded-lg p-2 w-full text-slate-800 bg-white outline-none focus:border-[#448e78]"
+              placeholder="Անուն Ազգանուն"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-semibold text-slate-500 pl-1">Ընտրել Խումբը</span>
+            <select
+              name="group_id"
+              value={newStudent.group_id}
+              onChange={handleChange}
+              className="border rounded-lg p-2 w-full text-slate-800 bg-white outline-none focus:border-[#448e78]">
+              {GROUPS.map((g) => (
+                <option key={g.id} value={g.id}>
+                  {g.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-semibold text-slate-500 pl-1">Հեռախոսահամար</span>
+            <input
+              required
+              type="text"
+              name="phone"
+              value={newStudent.phone}
+              onChange={handleChange}
+              className="border rounded-lg p-2 w-full text-slate-800 bg-white outline-none focus:border-[#448e78]"
+              placeholder="Հեռախոս"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-semibold text-slate-500 pl-1">Ծնողի Հեռախոս</span>
+            <input
+              required
+              type="text"
+              name="parent_phone"
+              value={newStudent.parent_phone}
+              onChange={handleChange}
+              className="border rounded-lg p-2 w-full text-slate-800 bg-white outline-none focus:border-[#448e78]"
+              placeholder="Ծնողի հեռախոս"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-semibold text-slate-500 pl-1">Ծննդյան Օր</span>
+            <input
+              required
+              type="date"
+              name="birthday"
+              value={newStudent.birthday}
+              onChange={handleChange}
+              className="border rounded-lg p-2 w-full text-slate-800 bg-white outline-none focus:border-[#448e78]"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-semibold text-slate-500 pl-1">Ընդունման Օր</span>
+            <input
+              required
+              type="date"
+              name="admission_day"
+              value={newStudent.admission_day}
+              onChange={handleChange}
+              className="border rounded-lg p-2 w-full text-slate-800 bg-white outline-none focus:border-[#448e78]"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-semibold text-slate-500 pl-1">Էլ. Փոստ</span>
+            <input
+              required
+              type="email"
+              name="email"
+              value={newStudent.email}
+              onChange={handleChange}
+              className="border rounded-lg p-2 w-full text-slate-800 bg-white outline-none focus:border-[#448e78]"
+              placeholder="Email"
+            />
+          </div>
         </div>
+
         <button
           type="submit"
-          className="mt-4 bg-[#448e78] text-white px-6 py-2 rounded font-bold hover:bg-green-700 transition-colors">
-          Ավելացնել
+          className="mt-5 w-full sm:w-auto bg-[#448e78] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#356e5d] transition-colors shadow-sm cursor-pointer">
+          Ավելացնել Ուսանողին
         </button>
       </form>
     </div>

@@ -23,7 +23,7 @@ const LoginPage = () => {
 
   return (
     <form onSubmit={handleSubmit} className="flex items-center justify-center min-h-screen">
-      <div className="flex flex-col items-center bg-white p-10 rounded-3xl shadow-2xl w-80 gap-4">
+      <div className="flex flex-col items-center bg-white p-10 rounded-3xl shadow-2xl w-75 gap-4">
         <h1 className="text-2xl text-[#5d2050] font-bold text-center tracking-tight">Մուտք</h1>
 
         <input

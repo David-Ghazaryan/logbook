@@ -67,21 +67,24 @@ const AttendanceModule = () => {
     );
 
   return (
-    <div className="flex max-w-7xl mx-10 py-10 bg-white">
-      <button
-        onClick={() => navigate('/')}
-        className="-translate-x-28 w-30 h-10 cursor-pointer bg-white rounded-xl text-[#448e78] font-bold border px-5">
-        Back
-      </button>
-      <div className="-translate-x-15 w-260">
-        <div className="bg-[#448e78] p-6 rounded-t-2xl text-white flex flex-wrap gap-4 justify-between items-center">
-          <span className="text-2xl font-bold">Logbook</span>
+    <div className="h-full w-full max-w-7xl mx-auto px-4 py-6  bg-white flex flex-col items-start gap-6">
+      <div className="w-full md:w-auto shrink-0">
+        <button
+          onClick={() => navigate('/')}
+          className="w-full md:w-20 h-10 cursor-pointer bg-white rounded-xl text-[#448e78] font-bold border px-5 hover:bg-slate-50 transition-colors">
+          Back
+        </button>
+      </div>
 
-          <div className="flex gap-4 ">
+      <div className=" w-full grow">
+        <div className="bg-[#448e78] p-4 md:p-6 rounded-t-2xl text-white flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+          <span className="text-xl md:text-2xl font-bold">Logbook</span>
+
+          <div className="flex gap-2 sm:gap-4 w-full sm:w-auto">
             <select
               value={selectedGroup}
               onChange={(e) => setSelectedGroup(parseInt(e.target.value))}
-              className="bg-white text-slate-800 px-4 py-2 rounded-lg font-medium outline-none shadow-md">
+              className="flex-1 sm:flex-none bg-white text-slate-800 px-3 py-2 md:px-4 rounded-lg font-medium outline-none shadow-md text-sm md:text-base">
               {GROUPS.map((group) => (
                 <option key={group.id} value={group.id}>
                   {group.label}
@@ -91,7 +94,7 @@ const AttendanceModule = () => {
             <select
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-              className="bg-white text-slate-800 px-4 py-2 rounded-lg font-medium outline-none shadow-md">
+              className="flex-1 sm:flex-none bg-white text-slate-800 px-3 py-2 md:px-4 rounded-lg font-medium outline-none shadow-md text-sm md:text-base">
               {MONTHS.map((month) => (
                 <option key={month.value} value={month.value}>
                   {month.label} 2026
@@ -101,11 +104,13 @@ const AttendanceModule = () => {
           </div>
         </div>
 
-        <AttendanceTable
-          students={filteredStudents}
-          attendanceRecords={attendanceRecords}
-          selectedMonth={selectedMonth}
-        />
+        <div className="w-full border-x border-b rounded-b-2xl overflow-hidden">
+          <AttendanceTable
+            students={filteredStudents}
+            attendanceRecords={attendanceRecords}
+            selectedMonth={selectedMonth}
+          />
+        </div>
       </div>
     </div>
   );

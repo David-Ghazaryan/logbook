@@ -29,14 +29,14 @@ const AttendanceTable = ({ students, attendanceRecords, selectedMonth }) => {
   }
 
   return (
-    <div className="overflow-x-auto  border shadow-sm bg-white">
-      <table className=" text-left border-collapse ">
+    <div className="w-full overflow-x-auto bg-white">
+      <table className="w-full min-w-max text-left border-collapse">
         <thead>
           <tr className="bg-slate-100 text-slate-600 text-[10px] tracking-wider">
-            <th className="p-3 text-sm sticky left-0 bg-slate-100 z-10 border-b border-r text-center">
+            <th className="p-3 text-xs md:text-sm md:sticky md:left-0 bg-slate-100 z-20 border-b border-r text-center min-w-12">
               ID
             </th>
-            <th className="p-5 text-sm sticky left-12 bg-slate-100 z-10 min-w-52 border-b border-r">
+            <th className="p-4 text-xs md:text-sm  bg-slate-100 z-20 min-w-45 md:min-w-52 border-b border-r md:sticky md:left-12">
               Անուն Ազգանուն
             </th>
 
@@ -47,9 +47,9 @@ const AttendanceTable = ({ students, attendanceRecords, selectedMonth }) => {
               const dayOfWeek = d.getDay();
 
               return (
-                <th key={date} className="p-2 text-center min-w-16 border-b border-l">
-                  <span className="block font-bold text-sm text-slate-800">{`${dayNum}.${monthNum}`}</span>
-                  <span className="text-[10px] font-medium opacity-70">
+                <th key={date} className="p-2 text-center min-w-15 md:min-w-16 border-b border-l">
+                  <span className="block font-bold text-xs md:text-sm text-slate-800">{`${dayNum}.${monthNum}`}</span>
+                  <span className="text-[9px] md:text-[10px] font-medium opacity-70">
                     {DAYS_OF_WEEK[dayOfWeek]}
                   </span>
                 </th>
